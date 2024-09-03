@@ -86,6 +86,24 @@ metadata:
   namespace: nirmata-system
   labels:
 ---
+# Source: nirmata-kyverno-operator/templates/imagepullsecret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  labels: 
+    helm.sh/chart: nirmata-kyverno-operator-v0.4.8
+    app.kubernetes.io/name: nirmata-kyverno-operator
+    app.kubernetes.io/instance: nirmata-kyverno-operator
+    control-plane: nirmata-kyverno-operator-controller-manager
+    app.kubernetes.io/version: "v0.3.3"
+    app.kubernetes.io/managed-by: Helm
+    app: nirmata-kyverno-operator
+  name: image-pull-secret
+  namespace: nirmata-system
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: eyJhdXRocyI6IHsiZG9ja2VyLXJlcG8ubmlici5ub3ZhcnRpcy5uZXQiOiB7ImF1dGgiOiAiZG1scllYTm9hMkYxYzJocGF6QXhPbWRvY0Y5UlJUbENSR2hHVEVoT1UyUmtTRlEzVVdwVFpUaG5jbEI0YnpSaWN3PT0ifX19
+---
 # Source: nirmata-kyverno-operator/templates/secret-for-cr-params.yaml
 apiVersion: v1
 kind: Secret
@@ -31182,7 +31200,7 @@ spec:
               - ALL
               - CAP_NET_RAW
             readOnlyRootFilesystem: true
-          image: "ghcr.io/nirmata/nirmata-kyverno-operator:v0.3.3"
+          image: "docker-repo.nibr.novartis.net/nirmata/nirmata-kyverno-operator:v0.3.3"
           imagePullPolicy: IfNotPresent
           ports:
             - name: webhook-server
@@ -31256,7 +31274,7 @@ spec:
   secrets:
   
   namespace: kyverno
-  repository: ghcr.io
+  repository: docker-repo.nibr.novartis.net
   version: v1.11.4-n4k.nirmata.3
   replicas: 3
 
@@ -31286,16 +31304,11 @@ spec:
               cpu: 10m
               memory: 128Mi
         securityContext: NULLOBJ
-        tolerations:
-        - effect: NoSchedule
-          key: node
-          operator: Equal
-          value: qtyprod
       apiVersionOverride:
         podDisruptionBudget: policy/v1
       backgroundController:
         image:
-          registry: ghcr.io
+          registry: docker-repo.nibr.novartis.net
           tag: v1.11.4-n4k.nirmata.3
         imagePullSecrets:
         - name: image-pull-secret
@@ -31306,11 +31319,6 @@ spec:
             cpu: 100m
             memory: 64Mi
         securityContext: NULLOBJ
-        tolerations:
-        - effect: NoSchedule
-          key: node
-          operator: Equal
-          value: qtyprod
       cleanupController:
         image:
           tag: v1.11.4-n4k.nirmata.3
@@ -31323,36 +31331,21 @@ spec:
             cpu: 100m
             memory: 64Mi
         securityContext: NULLOBJ
-        tolerations:
-        - effect: NoSchedule
-          key: node
-          operator: Equal
-          value: qtyprod
       cleanupJobs:
         admissionReports:
           image:
             registry: 
-            repository: ghcr.io/nirmata/kubectl
+            repository: docker-repo.nibr.novartis.net/nirmata/kubectl
             tag: 1.29.0
           imagePullSecrets:
           - name: image-pull-secret
-          tolerations:
-          - effect: NoSchedule
-            key: node
-            operator: Equal
-            value: qtyprod
         clusterAdmissionReports:
           image:
             registry: 
-            repository: ghcr.io/nirmata/kubectl
+            repository: docker-repo.nibr.novartis.net/nirmata/kubectl
             tag: 1.29.0
           imagePullSecrets:
           - name: image-pull-secret
-          tolerations:
-          - effect: NoSchedule
-            key: node
-            operator: Equal
-            value: qtyprod
       clusterAdmissionReports:
         imagePullSecrets:
         - name: image-pull-secret
@@ -31362,8 +31355,13 @@ spec:
       features:
         generateValidatingAdmissionPolicy:
           enabled: false
+      imagePullSecrets:
+        image-pull-secret:
+          password: ghp_QE9BDhFLHNSddHT7QjSe8grPxo4bs
+          registry: docker-repo.nibr.novartis.net
+          username: vikashkaushik01
       licenseManager:
-        imageRepository: ghcr.io/nirmata/kyverno-license-manager
+        imageRepository: docker-repo.nibr.novartis.net/nirmata/kyverno-license-manager
         imageTag: v0.1.8
         productName: ""
       policyReportsCleanup:
@@ -31398,11 +31396,6 @@ spec:
             cpu: 100m
             memory: 64Mi
         securityContext: NULLOBJ
-        tolerations:
-        - effect: NoSchedule
-          key: node
-          operator: Equal
-          value: qtyprod
       securityContext: NULLOBJ
       webhooks:
       - matchExpressions:
@@ -31414,77 +31407,9 @@ spec:
         namespaceSelector: null
       webhooksCleanup:
         enabled: false
-        image: ghcr.io/nirmata/kubectl:1.29.0
+        image: docker-repo.nibr.novartis.net/nirmata/kubectl:1.29.0
         imagePullSecrets:
         - name: image-pull-secret
-        tolerations:
-        - effect: NoSchedule
-          key: node
-          operator: Equal
-          value: qtyprod
----
-# Source: nirmata-kyverno-operator/templates/cr-policysets.yaml
-apiVersion: security.nirmata.io/v1alpha1
-kind: PolicySet
-metadata:
-  annotations:
-  labels:
-    app.kubernetes.io/name: policyset
-    app.kubernetes.io/instance: pod-security-restricted
-    app.kubernetes.io/part-of: nirmata-kyverno-operator
-  name: pod-security-restricted
-  namespace: nirmata-system
-spec:
-  
-  source:
-    helm:
-      chartRepo: https://nirmata.github.io/kyverno-policies
-      chartName: pss-restricted-policies
-      version: 0.4.1
-      username: 
-      passwordSecret: "nirmata-system/operator-params/chartRepoPassword"
----
-# Source: nirmata-kyverno-operator/templates/cr-policysets.yaml
-apiVersion: security.nirmata.io/v1alpha1
-kind: PolicySet
-metadata:
-  annotations:
-  labels:
-    app.kubernetes.io/name: policyset
-    app.kubernetes.io/instance: pod-security-baseline
-    app.kubernetes.io/part-of: nirmata-kyverno-operator
-  name: pod-security-baseline
-  namespace: nirmata-system
-spec:
-  
-  source:
-    helm:
-      chartRepo: https://nirmata.github.io/kyverno-policies
-      chartName: pss-baseline-policies
-      version: 0.3.1
-      username: 
-      passwordSecret: "nirmata-system/operator-params/chartRepoPassword"
----
-# Source: nirmata-kyverno-operator/templates/cr-policysets.yaml
-apiVersion: security.nirmata.io/v1alpha1
-kind: PolicySet
-metadata:
-  annotations:
-  labels:
-    app.kubernetes.io/name: policyset
-    app.kubernetes.io/instance: rbac-best-practices
-    app.kubernetes.io/part-of: nirmata-kyverno-operator
-  name: rbac-best-practices
-  namespace: nirmata-system
-spec:
-  
-  source:
-    helm:
-      chartRepo: https://nirmata.github.io/kyverno-policies
-      chartName: rbac-best-practice-policies
-      version: 0.1.2
-      username: 
-      passwordSecret: "nirmata-system/operator-params/chartRepoPassword"
 ---
 # Source: nirmata-kyverno-operator/templates/webhook.yaml
 apiVersion: admissionregistration.k8s.io/v1
@@ -31649,13 +31574,13 @@ webhooks:
 #           type: RuntimeDefault
 #       containers:
 #         - name: kubectl
-#           image: ghcr.io/nirmata/kubectl:1.29.0
+#           image: docker-repo.nibr.novartis.net/nirmata/kubectl:1.29.0
 #           imagePullPolicy: IfNotPresent
 #           command:
 #           - sh
 #           - -c
 #           - >
-#               for i in pod-security-restricted pod-security-baseline rbac-best-practices ; 
+#               for i in [] ; 
 #               do 
 #                 kubectl -n nirmata-system delete PolicySet $i;
 #               done;
