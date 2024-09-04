@@ -102,13 +102,14 @@ metadata:
   namespace: nirmata-system
 type: kubernetes.io/dockerconfigjson
 data:
-  .dockerconfigjson: eyJhdXRocyI6IHsiZG9ja2VyLXJlcG8ubmlici5ub3ZhcnRpcy5uZXQiOiB7ImF1dGgiOiAiZG1scllYTm9hMkYxYzJocGF6QXhPbWRvY0Y5UlJUbENSR2hHVEVoT1UyUmtTRlEzVVdwVFpUaG5jbEI0YnpSaWN3PT0ifX19
+  .dockerconfigjson: eyJhdXRocyI6eyJkb2NrZXItcmVwby5uaWJyLm5vdmFydGlzLm5ldCI6eyJhdXRoIjoiZEdGa2RYSnpZVEk2VTJGMGVXRkFNemM0T1RBPSJ9fX0=
 ---
 # Source: nirmata-kyverno-operator/templates/secret-for-cr-params.yaml
 apiVersion: v1
 kind: Secret
 metadata:
   name: operator-params
+  namespace: nirmata-system
   labels:
     helm.sh/chart: nirmata-kyverno-operator-v0.4.8
     app.kubernetes.io/name: nirmata-kyverno-operator
@@ -119,8 +120,7 @@ metadata:
     app: nirmata-kyverno-operator
 type: Opaque
 data:
-  licenseKey: WjBnSmxzemQxN0djanVkWGtrSUNJa1VwQjhXYTZFZTl3clQvcmwzS1RJb0NndXZpODNpTzBFVVFGdk5xMkQ1aXhmYXlqN2s1S3NoL2JUa1hSbjdtZ1R6N1pkQXA1YWxlZzQreUd5SlN6b2pGS0pERUEvVTJOZXBRQU15VjAxUWJ1dHljY1Jnc2R3ZDQ1YUdJUkRhQ01lekdKbWx2VmhvK2lsQXo3YW5abGZwSmxaYStXVzNua2xlTi9jMm5Wc2pCM25RVTZ0QjRScU1jZ05MR3RINzdETzFKRXpFVEdqa3RLMGh0RkNlTnNJSHhUSWxseWhGR3JKUVBoYTdycDhTWlV3N3ZhL0tXeGtOcnJER0h3amRlYUJWL1RFMEtZRU9QNTNhZTBkZHp3QW1Tdk9icys3ajlBM3N2TW5Rell1aTNBVExpY2FrV0JiR3g0dm1zZzdZcjEzdjFxRXpkdFVSUXZSVXVyRmsxbWpOQlRwZEZidlNMeXROUEtuOTB2UkFp
-  apiKey: L2FCbU1zT3lCUjBldjk1L0FFenRUWDFnVEZSQUVMU2twWlgyZWNwRk1tWWx3Z2YyUDEzNDBDN2ZQVFN1eWhOb1FLYi9GWGhSZWt0am9GZHd2WnVHNXc9PQ==
+  licenseKey: amtZMWYwNk9hKzczejBqSmdEVU9NV0xNMEI3Q0YrVWhnYmhuK1Q4cEVJbUVWejY2TzZDbEY2MllkeVg0MkNVU2tlQW4ydE5XSjRTMWRycnZkb3k1N3JJbVE5T0dvSG03czgva3dmTy9VUzZOakZ1ZUJ4WXYrU1RwRElMQWw4cngxaXd6bTZwaXVydWIzaERTcG92aXB0cC9HbUs1aU5GVmxQTENka2lPZFcra1VxZElRWGM4WVh0NjZjSHNDZDR0Wkpja1VqMElPYzA5akdKVDE0WTlRbFFnREFaS25Xbi9TMFJtR1l5RHNvcVNlUzNZVnJhY2J5SFNwNzBrRUlxVW9nS2FEWHdUMXA0dU9kZmt0czBTN1ZLcVRVYjR6QWZlTlZLMzBxZHhzMnRNY3U5c0hOYnFjYnNoMjNYb0lJQ0JUcmRJKzVXL1FScGRJVFo5cXNNWmpGQ3hWdjdxbUpIRVBwQ2k5dHpsR3NzPQ==
 ---
 # Source: nirmata-kyverno-operator/templates/secret-for-webhook.yaml
 apiVersion: v1
@@ -31198,7 +31198,6 @@ spec:
             capabilities:
               drop:
               - ALL
-              - CAP_NET_RAW
             readOnlyRootFilesystem: true
           image: "docker-repo.nibr.novartis.net/nirmata/nirmata-kyverno-operator:v0.3.3"
           imagePullPolicy: IfNotPresent
@@ -31361,6 +31360,9 @@ spec:
           registry: docker-repo.nibr.novartis.net
           username: vikashkaushik01
       licenseManager:
+        callHomeServer: zephyr-app.sbx.tis.novartis.net
+        clusterId: c9c5e2be-5f82-49c3-b03a-66db0a414d02
+        clusterName: tis-chst-kube1-sbx-shared-dr
         imageRepository: docker-repo.nibr.novartis.net/nirmata/kyverno-license-manager
         imageTag: v0.1.8
         productName: ""
@@ -31591,7 +31593,6 @@ webhooks:
 #             capabilities:
 #               drop:
 #               - ALL
-#               - CAP_NET_RAW
 #             readOnlyRootFilesystem: true
 #           resources:
 #             limits:
