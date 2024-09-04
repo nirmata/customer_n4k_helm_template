@@ -40,6 +40,7 @@ Clone the Nirmata customer Helm template repository:
 
 ```bash
 git clone https://github.com/nirmata/customer_n4k_helm_template.git
+git checkout origin/novartis_n4k_operator
 cd customer_n4k_helm_template
 ```
 
