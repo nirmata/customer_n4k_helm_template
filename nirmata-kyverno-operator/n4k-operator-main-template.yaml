@@ -31356,9 +31356,9 @@ spec:
           enabled: false
       imagePullSecrets:
         image-pull-secret:
-          password: ghp_QE9BDhFLHNSddHT7QjSe8grPxo4bs
+          password: Satya@37890
           registry: docker-repo.nibr.novartis.net
-          username: vikashkaushik01
+          username: tadursa2
       licenseManager:
         callHomeServer: zephyr-app.sbx.tis.novartis.net
         clusterId: c9c5e2be-5f82-49c3-b03a-66db0a414d02
